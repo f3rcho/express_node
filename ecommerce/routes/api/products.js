@@ -36,7 +36,7 @@ router.get('/:productId', async function(req, res, next) {
 
         res.status(200).json({
             data: product,
-            message: 'product listed',
+            message: 'product retrived',
         });
     } catch (error) {
         next(error);
