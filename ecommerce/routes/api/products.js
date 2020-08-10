@@ -1,50 +1,92 @@
 const express = require('express');
 const router = express.Router();
-const productMock = require('../../utils/mocks/products');
+const ProductsService = require('../../services/products');
 
-router.get('/', function(req, res, next) {
-    const { query } = req.query;
+const productsService = new ProductsService;
 
-    res.status(200).json({
-        data: productMock,
-        message: 'products lised',
-    });
+// function asyncHandler(cb) {
+//     return async (req, res, next) => {
+//       try {
+//         await cb(req, res, next);
+//       } catch (error) {
+//         next(error);
+//       }
+//     };
+//   }
+
+router.get('/', async function(req, res, next) {
+    const { tags } = req.query;
+    try {
+        const products = await productsService.getProducts({ tags });
+
+        res.status(200).json({
+            data: products,
+            message: 'products lised',
+        });
+    } catch (error) {
+        next(error);
+    };
 });
 
-router.get('/:productId', function(req, res, next) {
+router.get('/:productId', async function(req, res, next) {
     const { productId } = req.params;
 
-    res.status(200).json({
-        data: productMock[0],
-        message: 'product listed',
-    });
+    try {
+        const product = await productsService.getProduct({ productId });
+
+        res.status(200).json({
+            data: product,
+            message: 'product listed',
+        });
+    } catch (error) {
+        next(error);
+    };
 });
 
-router.post('/', function(req, res, next) {
-    const { body: data } = req;
-    res.status(201).json({
-        data: productMock[0],
-        message: 'product created',
-    });
+router.post('/', async function(req, res, next) {
+    const { body: product } = req;
+
+    try {
+        const createdProduct = await productsService.createProduct({ product });
+
+        res.status(201).json({
+            data: createdProduct,
+            message: 'product created',
+        });
+    } catch (error) {
+        next();
+    };
 });
 
-router.put('/:productId', function(req, res, next) {
-    const { body: data } = req;
+router.put('/:productId', async function(req, res, next) {
+    const { productId } = req.params;
+    const { body: product } = req;
+
+    try {
+        const updatedProduct = await productsService.updateProduct({ product, productId });
+
+        res.status(200).json({
+            data: updatedProduct,
+            message: 'product updated',
+        });
+    } catch (error) {
+        next(error);
+    };
+});
+
+router.delete('/:productId', async function(req, res, next) {
     const { productId } = req.params;
 
-    res.status(200).json({
-        data: productId,
-        message: 'product updated',
-    });
-});
+    try {
+        const deletedProduct = await productsService.deleteProduct({ productId });
 
-router.delete('/:productId', function(req, res, next) {
-    const { productId } = req.params;
-
-    res.status(200).json({
-        data: productId,
-        message: 'Product deleted',
-    });
+        res.status(200).json({
+            data: deletedProduct,
+            message: 'Product deleted',
+        });
+    } catch (error) {
+        next(error);
+    };
 });
 
 module.exports = router;
