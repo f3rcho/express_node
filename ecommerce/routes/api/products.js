@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const slash = require('express-slash');
 const app = express();
 const router = express.Router({
@@ -8,10 +9,17 @@ const router = express.Router({
 const ProductsService = require('../../services/products');
 const joi = require('@hapi/joi');
 
-
+// Validation Handler middleware
 const validationHandler = require('../../utils/middleware/validationHandler');
 
-const { productIdSchema, productTagSchema, createProductSchema, updateProductSchema } = require('../../utils/schema/productsSchema');
+// Validation Schemas
+const { productIdSchema,
+    createProductSchema,
+    updateProductSchema
+} = require('../../utils/schema/productsSchema');
+
+// JWT strategy
+require('../../utils/auth/strategies/jwt');
 
 const productsService = new ProductsService;
 
@@ -32,7 +40,9 @@ router.get('/', async function(req, res, next) {
     };
 });
 
-router.get('/:productId', validationHandler(joi.object({ productId: productIdSchema})), async function(req, res, next) {
+router.get('/:productId',
+validationHandler(joi.object({ productId: productIdSchema})),
+async function(req, res, next) {
     const { productId } = req.params;
 
     try {
@@ -47,7 +57,10 @@ router.get('/:productId', validationHandler(joi.object({ productId: productIdSch
     };
 });
 
-router.post('/', validationHandler(createProductSchema), async function(req, res, next) {
+router.post('/',
+passport.authenticate('jwt', { session: false }),
+validationHandler(createProductSchema),
+async function(req, res, next) {
     const { body: product } = req;
 
     try {
@@ -62,7 +75,9 @@ router.post('/', validationHandler(createProductSchema), async function(req, res
     };
 });
 
-router.put('/:productId', validationHandler(joi.object({ productId: productIdSchema }), 'params'),
+router.put('/:productId',
+passport.authenticate('jwt', { session: false }),
+validationHandler(joi.object({ productId: productIdSchema }), 'params'),
 validationHandler(updateProductSchema),
 async function(req, res, next) {
     const { productId } = req.params;
@@ -80,7 +95,9 @@ async function(req, res, next) {
     };
 });
 
-router.delete('/:productId', async function(req, res, next) {
+router.delete('/:productId',
+passport.authenticate('jwt', { session: false }),
+async function(req, res, next) {
     const { productId } = req.params;
 
     try {
