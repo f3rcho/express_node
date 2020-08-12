@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const productsRouter = require('./routes/views/products');
 const productsApiRouter = require('./routes/api/products');
+const { config } = require('./config/config');
 
 // App
 const app = express();
@@ -26,6 +27,6 @@ app.get('/', function(req, res) {
 });
 
 // Server
-const server = app.listen(8000, () => {
-    console.log(`App listening on http://localhost:${server.address().port}`);
+app.listen(config.port, () => {
+    console.log(`App listening on http://localhost:${config.port}`);
 });
