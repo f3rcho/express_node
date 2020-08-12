@@ -3,6 +3,7 @@ const path = require('path');
 const boom = require('@hapi/boom');
 const productsRouter = require('./routes/views/products');
 const productsApiRouter = require('./routes/api/products');
+const authApiRouter = require('./routes/api/auth');
 const { config } = require('./config/config');
 
 const isRequestAjaxOrApi = require('./utils/isRequestAjaxOrApi');
@@ -12,6 +13,7 @@ const { logErrors, clientErrorHandler, errorHandler, wrapErrors } = require('./u
 // App
 const app = express();
 
+// Express Slash middleware
 app.enabled('strict routing');
 
 // Body Parser
@@ -29,12 +31,14 @@ app.enable('strict routing');
 // Routes
 app.use('/products', productsRouter);
 app.use('/api/products', productsApiRouter);
+app.use('/api/auth', authApiRouter);
 
 // Redirect
 app.get('/', function(req, res) {
     res.redirect('/products');
 });
 
+// Not found
 app.use(function (req, res, next) {
     if(isRequestAjaxOrApi(req)) {
         const { output: { statusCode, payload}} = boom.notFound();
