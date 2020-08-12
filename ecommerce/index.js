@@ -4,6 +4,8 @@ const productsRouter = require('./routes/views/products');
 const productsApiRouter = require('./routes/api/products');
 const { config } = require('./config/config');
 
+const { logErrors, clientErrorHandler, errorHandler } = require('./utils/middleware/errorHandlers');
+
 // App
 const app = express();
 
@@ -25,6 +27,11 @@ app.use('/api/products', productsApiRouter);
 app.get('/', function(req, res) {
     res.redirect('/products');
 });
+
+// Error Handler
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
 
 // Server
 app.listen(config.port, () => {

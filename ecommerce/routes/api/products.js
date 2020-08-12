@@ -4,16 +4,6 @@ const ProductsService = require('../../services/products');
 
 const productsService = new ProductsService;
 
-// function asyncHandler(cb) {
-//     return async (req, res, next) => {
-//       try {
-//         await cb(req, res, next);
-//       } catch (error) {
-//         next(error);
-//       }
-//     };
-//   }
-
 router.get('/', async function(req, res, next) {
     const { tags } = req.query;
     try {
