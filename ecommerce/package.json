@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node index",
     "dev": "nodemon index.js",
+    "dev:inspect": "nodemon --inspect index",
+    "dev:debug": "DEBUG=express:*,app:* npm run dev",
+    "debug": "DEBUG=express:*,app:* npm run start",
     "test": "mocha --exit",
     "test:cover": "nyc npm run test"
   },
@@ -17,6 +20,7 @@
     "@hapi/joi": "^17.1.1",
     "@sentry/node": "^5.20.1",
     "bcrypt": "^5.0.0",
+    "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-slash": "^2.0.1",
@@ -39,6 +43,11 @@
   },
   "nyc": {
     "all": true,
-    "include": ["routes", "services", "lib", "utils"]
+    "include": [
+      "routes",
+      "services",
+      "lib",
+      "utils"
+    ]
   }
 }
