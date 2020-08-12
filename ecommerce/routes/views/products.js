@@ -6,7 +6,7 @@ const router = express.Router({
     strict: app.get('strict routing'),
 });
 const ProductsService = require('../../services/products');
-
+const { config } = require('../../config/config');
 const productsService = new ProductsService();
 
 app.use(router);
@@ -16,7 +16,7 @@ router.get('/', async function(req, res, next) {
     const { tags } = req.query;
     try {
         const products = await productsService.getProducts({ tags });
-        res.render('products', { products });
+        res.render('products', { products, dev: config.dev });
     } catch (error) {
         next(error);
     };
