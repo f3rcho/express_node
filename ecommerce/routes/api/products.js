@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const ProductsService = require('../../services/products');
+const joi = require('@hapi/joi');
+
+const validationHandler = require('../../utils/middleware/validationHandler');
+
+const { productIdSchema, productTagSchema, createProductSchema, updateProductSchema } = require('../../utils/schema/productsSchema');
 
 const productsService = new ProductsService;
 
@@ -18,7 +23,7 @@ router.get('/', async function(req, res, next) {
     };
 });
 
-router.get('/:productId', async function(req, res, next) {
+router.get('/:productId', validationHandler(joi.object({ productId: productIdSchema})), async function(req, res, next) {
     const { productId } = req.params;
 
     try {
@@ -33,7 +38,7 @@ router.get('/:productId', async function(req, res, next) {
     };
 });
 
-router.post('/', async function(req, res, next) {
+router.post('/', validationHandler(createProductSchema), async function(req, res, next) {
     const { body: product } = req;
 
     try {
@@ -48,7 +53,9 @@ router.post('/', async function(req, res, next) {
     };
 });
 
-router.put('/:productId', async function(req, res, next) {
+router.put('/:productId', validationHandler(joi.object({ productId: productIdSchema }), 'params'),
+validationHandler(updateProductSchema),
+async function(req, res, next) {
     const { productId } = req.params;
     const { body: product } = req;
 
