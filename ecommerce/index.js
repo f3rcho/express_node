@@ -12,6 +12,8 @@ const { logErrors, clientErrorHandler, errorHandler, wrapErrors } = require('./u
 // App
 const app = express();
 
+app.enabled('strict routing');
+
 // Body Parser
 app.use(express.json());
 
@@ -21,6 +23,8 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 // View Engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+app.enable('strict routing');
 
 // Routes
 app.use('/products', productsRouter);

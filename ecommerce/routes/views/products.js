@@ -1,8 +1,16 @@
 const express = require('express');
-const router = express.Router();
+const slash = require('express-slash');
+const app = express();
+const router = express.Router({
+    caseSensitive: app.get('case sensitive routing'),
+    strict: app.get('strict routing'),
+});
 const ProductsService = require('../../services/products');
 
 const productsService = new ProductsService();
+
+app.use(router);
+app.use(slash());
 
 router.get('/', async function(req, res, next) {
     const { tags } = req.query;
