@@ -17,8 +17,9 @@ const { productIdSchema,
 // JWT strategy
 require('../../utils/auth/strategies/jwt');
 
-const productsService = new ProductsService;
 
+const cacheResponse = require('../../utils/cacheResponse');
+const { FIVE_MINUTES_IN_SECONDS, SIXTY_MINUTES_IN_SECONDS } = require('../../utils/time');
 
 
 function productsApi(app) {
@@ -27,11 +28,14 @@ function productsApi(app) {
         strict: app.get('strict routing'),
     });
     app.use('/api/products', router);
-
+    
     app.use(router);
     app.use(slash());
 
+    const productsService = new ProductsService;
+    
     router.get('/', async function(req, res, next) {
+        cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
         const { tags } = req.query;
         try {
             const products = await productsService.getProducts({ tags });
@@ -48,6 +52,8 @@ function productsApi(app) {
     router.get('/:productId',
     validationHandler(joi.object({ productId: productIdSchema})),
     async function(req, res, next) {
+        cacheResponse(res, SIXTY_MINUTES_IN_SECONDS);
+
         const { productId } = req.params;
 
         try {
