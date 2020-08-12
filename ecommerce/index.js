@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const boom = require('@hapi/boom');
 const debug = require('debug')('app:server');
-const helmet = require('helmet');
+// const helmet = require('helmet');
+// const cors = require('cors');
 const productsRouter = require('./routes/views/products');
 const productsApiRouter = require('./routes/api/products');
 const authApiRouter = require('./routes/api/auth');
@@ -18,8 +19,12 @@ const app = express();
 // Express Slash middleware
 app.enabled('strict routing');
 
+// cors middleware
+// if(config.dev) {
+//     app.use(cors());
+// };
 // Helmet
-app.use(helmet());
+// app.use(helmet());
 // Body Parser
 app.use(express.json());
 
