@@ -30,7 +30,7 @@ app.enable('strict routing');
 
 // Routes
 app.use('/products', productsRouter);
-app.use('/api/products', productsApiRouter);
+productsApiRouter(app);
 app.use('/api/auth', authApiRouter);
 
 // Redirect
